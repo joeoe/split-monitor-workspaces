@@ -21,11 +21,16 @@ endif
 
 .PHONY: clean clangd
 
-all: check_env $(PLUGIN_NAME).so
+all: clean check_env $(PLUGIN_NAME).so
 
 install: all
 	mkdir -p ${INSTALL_LOCATION}
 	cp $(PLUGIN_NAME).so ${INSTALL_LOCATION}
+
+install_and_reload:
+	hyprctl plugin unload ${INSTALL_LOCATION}/$(PLUGIN_NAME).so 2>/dev/null
+	${MAKE} install
+	hyprctl plugin load ${INSTALL_LOCATION}/$(PLUGIN_NAME).so
 
 check_env:
 	@if pkg-config --exists hyprland; then \
